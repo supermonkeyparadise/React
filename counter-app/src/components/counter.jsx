@@ -33,7 +33,7 @@ class Counter extends Component {
     // JSX compiles to React.createElement
     return (
       <div className="row">
-        {this.props.children}
+        <div className="col-3">{this.props.children}</div>
         <div className="col-1">
           <span style={this.styles} className={this.getBadgeClasses()}>
             {this.formatCount()}
