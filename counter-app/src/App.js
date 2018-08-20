@@ -17,18 +17,26 @@ class App extends Component {
 
   handleIncrement = counter => {
     // clone counters array
+    // clone 的是記憶體位置，因為不是基本型別，有 ref 的問題！！
     const counters = [...this.state.counters];
     const index = counters.indexOf(counter);
+    // clone 基本型別，所以沒有 ref 的問題！！
     counters[index] = { ...counter };
     counters[index].value++;
+
     this.setState({ counters });
   };
 
   handleReset = () => {
+    console.log('>>> [ Before ] state val:', this.state.counters);
     const counters = this.state.counters.map(counter => {
-      counter.value = 0;
-      return counter;
+      const temp = { ...counter };
+      temp.value = 0;
+      return temp;
     });
+
+    console.log('>>> [ clone ] state val :', counters);
+    console.log('>>> [ After ] state val:', this.state.counters);
 
     this.setState({ counters });
   };
@@ -39,6 +47,7 @@ class App extends Component {
     );
     this.setState({ counters });
   };
+
   render() {
     return (
       <React.Fragment>
