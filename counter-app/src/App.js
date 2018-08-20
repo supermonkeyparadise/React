@@ -15,6 +15,16 @@ class App extends Component {
     ]
   };
 
+  constructor() {
+    super();
+    console.log('>>> App - Constructor');
+  }
+
+  componentDidMount() {
+    // AJAX Call
+    console.log('>>> App - Mounted');
+  }
+
   handleIncrement = counter => {
     // clone counters array
     // clone 的是記憶體位置，因為不是基本型別，有 ref 的問題！！
@@ -49,6 +59,8 @@ class App extends Component {
   };
 
   render() {
+    console.log('>>> App - Rendered');
+
     return (
       <React.Fragment>
         <NavBar
