@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 class Counter extends Component {
   state = {
-    count: 0,
+    value: this.props.counter.value,
     imageUrl: 'https://picsum.photos/200',
     tags: ['tag1', 'tag2', 'tag3']
   };
@@ -23,7 +23,7 @@ class Counter extends Component {
 
   handleIncrement = () => {
     console.log('Increment Clicked', this);
-    this.setState({ count: ++this.state.count });
+    this.setState({ value: this.state.value + 1 });
   };
 
   renderTags() {
@@ -39,9 +39,11 @@ class Counter extends Component {
   }
 
   render() {
+    console.log('>>> props', this.props);
     // JSX compiles to React.createElement
     return (
       <React.Fragment>
+        {this.props.children}
         {/* 
           [ Embedding Expressions ]
           access the javascript expression
@@ -55,6 +57,12 @@ class Counter extends Component {
         >
           Increment
         </button>
+        <button
+          onClick={() => this.props.onDelete(this.props.counter.id)}
+          className="btn btn-danger btn-sm m-2"
+        >
+          Delete
+        </button>
         {this.state.tags.length === 0 ? (
           <div>Please create a new tag!</div>
         ) : null}
@@ -65,13 +73,13 @@ class Counter extends Component {
 
   getBadgeClasses() {
     let classes = 'badge m-2 badge-';
-    classes += this.state.count === 0 ? 'warning' : 'primary';
+    classes += this.state.value === 0 ? 'warning' : 'primary';
     return classes;
   }
 
   formatCount() {
-    const { count } = this.state;
-    return count === 0 ? <span>Zero</span> : count;
+    const { value } = this.state;
+    return value === 0 ? <span>Zero</span> : value;
   }
 }
 
