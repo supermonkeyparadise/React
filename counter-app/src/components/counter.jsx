@@ -6,6 +6,15 @@ class Counter extends Component {
     fontWeight: 'bold'
   };
 
+  componentDidUpdate(prevProps, prevState) {
+    console.log('>>> prevProps:', prevProps);
+    console.log('>>> prevState:', prevState);
+
+    if (prevProps.counter.value !== this.props.counter.value) {
+      // Ajax Call and get new data from server
+    }
+  }
+
   // constructor() {
   //   super();
   //   this.handleIncrement = this.handleIncrement.bind(this);
