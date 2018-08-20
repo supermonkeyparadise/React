@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import { getMovies, deleteMovie } from './../services/fakeMovieService';
+import Like from './common/like';
 
 class Movies extends Component {
   // 不應該在這裡初始化
@@ -14,6 +15,15 @@ class Movies extends Component {
 
     // overwrite movies 屬性的值
     // this.setState({ movies: movies });
+    this.setState({ movies });
+  };
+
+  handleLike = movie => {
+    const movies = [...this.state.movies];
+    const index = movies.indexOf(movie);
+    movies[index] = { ...movie };
+    movies[index].liked = !movie.liked;
+
     this.setState({ movies });
   };
 
@@ -34,6 +44,7 @@ class Movies extends Component {
               <th scope="col">Stock</th>
               <th scope="col">Rate</th>
               <th scope="col" />
+              <th scope="col" />
             </tr>
           </thead>
           <tbody>
@@ -45,6 +56,12 @@ class Movies extends Component {
                   <td>{movie.genre.name}</td>
                   <td>{movie.numberInStock}</td>
                   <td>{movie.dailyRentalRate}</td>
+                  <td>
+                    <Like
+                      liked={movie.liked}
+                      onLikeToggle={() => this.handleLike(movie)}
+                    />
+                  </td>
                   <td>
                     <button
                       onClick={() => this.handleDelete(movie)}
