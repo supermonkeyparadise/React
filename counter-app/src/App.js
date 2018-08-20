@@ -37,6 +37,18 @@ class App extends Component {
     this.setState({ counters });
   };
 
+  handleDecrement = counter => {
+    // clone counters array
+    // clone 的是記憶體位置，因為不是基本型別，有 ref 的問題！！
+    const counters = [...this.state.counters];
+    const index = counters.indexOf(counter);
+    // clone 基本型別，所以沒有 ref 的問題！！
+    counters[index] = { ...counter };
+    counters[index].value--;
+
+    this.setState({ counters });
+  };
+
   handleReset = () => {
     console.log('>>> [ Before ] state val:', this.state.counters);
     const counters = this.state.counters.map(counter => {
@@ -73,6 +85,7 @@ class App extends Component {
             counters={this.state.counters}
             onReset={this.handleReset}
             onIncrement={this.handleIncrement}
+            onDecrement={this.handleDecrement}
             onDelete={this.handleDelete}
           />
         </main>
