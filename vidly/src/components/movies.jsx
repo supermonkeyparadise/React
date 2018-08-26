@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
 
 import { getMovies } from './../services/fakeMovieService';
 import { getGenres } from './../services/fakeGenreService';
@@ -13,7 +14,8 @@ class Movies extends Component {
     genres: [],
     pageSize: 4,
     currentPage: 1,
-    selectedGenre: ''
+    selectedGenre: '',
+    sortColumn: { path: 'title', order: 'asc' }
   };
 
   // Ajax fetch data
@@ -51,8 +53,8 @@ class Movies extends Component {
     this.setState({ selectedGenre: genre, currentPage: 1 });
   };
 
-  handleSort = path => {
-    console.log('>>> path', path);
+  handleSort = sortColumn => {
+    this.setState({ sortColumn });
   };
 
   render() {
@@ -61,7 +63,8 @@ class Movies extends Component {
       pageSize,
       currentPage,
       movies: allMovies,
-      selectedGenre
+      selectedGenre,
+      sortColumn
     } = this.state;
 
     if (count === 0) return <p>There are no movies in the database.</p>;
@@ -71,7 +74,9 @@ class Movies extends Component {
         ? allMovies.filter(m => m.genre._id === selectedGenre._id)
         : allMovies;
 
-    const movies = paginate(filtered, currentPage, pageSize);
+    const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
+
+    const movies = paginate(sorted, currentPage, pageSize);
 
     return (
       <div className="row">
@@ -86,6 +91,7 @@ class Movies extends Component {
           <p>Show {filtered.length} movies in the database.</p>
           <MoviesTable
             movies={movies}
+            sortColumn={sortColumn}
             onDelete={this.handleDelete}
             onLike={this.handleLike}
             onSort={this.handleSort}
