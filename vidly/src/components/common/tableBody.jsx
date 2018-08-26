@@ -8,18 +8,30 @@ class TableBody extends Component {
     return _.get(item, column.path);
   };
 
+  createKey = (item, column) => {
+    return item._id + (column.path || column.key);
+  };
+
   render() {
     const { data, columns } = this.props;
 
     return (
       <tbody>
         {data.map((item, index) => (
-          <tr>
+          <tr key={item._id}>
             {columns.map(column => {
               if (column.key !== '#')
-                return <td>{this.renderCell(item, column)}</td>;
+                return (
+                  <td key={this.createKey(item, column)}>
+                    {this.renderCell(item, column)}
+                  </td>
+                );
 
-              return <th scope="row">{index + 1}</th>;
+              return (
+                <th key={column.key} scope="row">
+                  {index + 1}
+                </th>
+              );
             })}
           </tr>
         ))}
