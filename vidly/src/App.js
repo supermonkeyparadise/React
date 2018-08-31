@@ -7,7 +7,7 @@ import LoginForm from './components/loginForm';
 import Customers from './components/customers';
 import Rentals from './components/rentals';
 import NotFound from './components/notFound';
-import NavBar from './components/common/navBar';
+import NavBar from './components/navBar';
 
 import './App.css';
 
