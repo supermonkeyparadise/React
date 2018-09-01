@@ -1,17 +1,91 @@
 import React from 'react';
+import Joi from 'joi-browser';
 
-const MovieForm = ({ match, history }) => {
-  return (
-    <React.Fragment>
-      <h1>MovieForm {match.params.id}</h1>
-      <button
-        className="btn btn-primary"
-        onClick={() => history.push('/movies')}
-      >
-        Save
-      </button>
-    </React.Fragment>
-  );
-};
+import Form from './common/form';
+import { getMovie, saveMovie } from '../services/fakeMovieService';
+import { getGenres } from '../services/fakeGenreService';
+
+class MovieForm extends Form {
+  state = {
+    data: {
+      title: '',
+      genreId: '',
+      numberInStock: '',
+      dailyRentalRate: ''
+    },
+    genres: [],
+    errors: {}
+  };
+
+  schema = {
+    _id: Joi.string(), // new movie 沒有 _id
+    title: Joi.string()
+      .required()
+      .label('Title'),
+    genreId: Joi.string()
+      .required()
+      .label('Genre'),
+    numberInStock: Joi.number()
+      .required()
+      .min(0)
+      .max(100)
+      .label('Number in Stock'),
+    dailyRentalRate: Joi.number()
+      .required()
+      .min(0)
+      .max(10)
+      .label('Daily Rental Rate')
+  };
+
+  componentDidMount() {
+    const genres = getGenres();
+    this.setState({ genres });
+
+    const movieId = this.props.match.params.id;
+    if (movieId === 'new') return;
+
+    const movie = getMovie(movieId);
+    // ＊＊必須使用 replace -> 當按下上一頁時，進不了這一頁
+    if (!movie) return this.props.history.replace('/not-found');
+
+    // 因為 server 傳回來的資料格式，不一定就是頁面使用的呈現格式
+    // 所以使用 mapToViewModel 轉換資料格式
+    this.setState({
+      data: this.mapToViewModel(movie)
+    });
+  }
+
+  mapToViewModel(movie) {
+    return {
+      _id: movie._id,
+      title: movie.title,
+      genreId: movie.genre._id,
+      numberInStock: movie.numberInStock,
+      dailyRentalRate: movie.dailyRentalRate
+    };
+  }
+
+  doSubmit = () => {
+    // 儲存在 local
+    saveMovie(this.state.data);
+
+    this.props.history.push('/movies');
+  };
+
+  render() {
+    return (
+      <div>
+        <h1>Movie Form</h1>
+        <form onSubmit={this.handleSubmit}>
+          {this.renderInput('title', 'Title')}
+          {this.renderSelect('genreId', 'Genre', this.state.genres)}
+          {this.renderInput('numberInStock', 'Number in Stock', 'number')}
+          {this.renderInput('dailyRentalRate', 'Rate')}
+          {this.renderButton('Save')}
+        </form>
+      </div>
+    );
+  }
+}
 
 export default MovieForm;
