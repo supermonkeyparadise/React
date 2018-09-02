@@ -46,8 +46,25 @@ class App extends Component {
     this.setState({ posts });
   };
 
-  handleDelete = post => {
-    console.log('Delete', post);
+  // 樂觀刪除
+  handleDelete = async post => {
+    const originalPosts = this.state.posts;
+
+    const posts = this.state.posts.filter(p => p.id !== post.id);
+    this.setState({ posts });
+
+    try {
+      await axios.delete(`${apiEndpoint}/${post.id}`, post);
+    } catch (ex) {
+      if (ex.response && ex.response.status === 404)
+        alert('This post has already been deleted.');
+      else {
+        console.log('Logging the error', ex);
+        alert('An Unexpected error occurred.');
+      }
+    }
+
+    const { data } = await axios.delete(`${apiEndpoint}/${post.id}`, post);
   };
 
   render() {
