@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 
 import httpService from './services/httpService';
-import './App.css';
+import config from './config/config.json';
 
-const apiEndpoint = 'https://jsonplaceholder.typicode.com/posts';
+import './App.css';
 
 class App extends Component {
   state = {
@@ -17,7 +17,7 @@ class App extends Component {
     // const response = await promise;
     // console.log('>>> response:', response);
 
-    const { data: posts } = await httpService.get(apiEndpoint);
+    const { data: posts } = await httpService.get(config.apiEndpoint);
 
     console.log('>>> posts:', posts);
 
@@ -26,7 +26,7 @@ class App extends Component {
 
   handleAdd = async () => {
     const obj = { title: 'a', body: 'b' };
-    const { data: post } = await httpService.post(apiEndpoint, obj);
+    const { data: post } = await httpService.post(config.apiEndpoint, obj);
 
     console.log('>>> post:', post);
 
@@ -36,7 +36,10 @@ class App extends Component {
 
   handleUpdate = async post => {
     post.title = 'UPDATED';
-    const { data } = await httpService.put(`${apiEndpoint}/${post.id}`, post);
+    const { data } = await httpService.put(
+      `${config.apiEndpoint}/${post.id}`,
+      post
+    );
     // httpService.patch(`${apiEndpoint}/${post.id}`, { title: post.id });
 
     console.log('>>> put:', data);
@@ -55,7 +58,7 @@ class App extends Component {
     this.setState({ posts });
 
     try {
-      await httpService.delete(`${apiEndpoint}/${post.id}`, post);
+      await httpService.delete(`${config.apiEndpoint}/${post.id}`, post);
     } catch (ex) {
       console.log('>>> HANDLE DELETE CATCH BLOCK');
 
