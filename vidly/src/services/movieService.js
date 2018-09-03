@@ -3,12 +3,16 @@ import { apiUrl } from './../config/config.json';
 
 const apiEedpoint = `${apiUrl}/movies`;
 
+function movieUrl(id) {
+  return `${apiEedpoint}/${id}`;
+}
+
 export function getMovies() {
   return httpService.get(apiEedpoint);
 }
 
 export function getMovie(movieId) {
-  return httpService.get(`${apiEedpoint}/${movieId}`);
+  return httpService.get(movieUrl(movieId));
 }
 
 export function saveMovie(movie) {
@@ -16,7 +20,7 @@ export function saveMovie(movie) {
   if (movie._id) {
     const body = { ...movie };
     delete body._id;
-    return httpService.put(`${apiEedpoint}/${movie._id}`, body);
+    return httpService.put(movieUrl(movie._id), body);
   }
 
   // create movie
@@ -24,5 +28,5 @@ export function saveMovie(movie) {
 }
 
 export function deleteMovie(movieId) {
-  return httpService.delete(`${apiEedpoint}/${movieId}`);
+  return httpService.delete(movieUrl(movieId));
 }
