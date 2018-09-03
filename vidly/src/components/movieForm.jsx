@@ -2,8 +2,8 @@ import React from 'react';
 import Joi from 'joi-browser';
 
 import Form from './common/form';
-import { getMovie, saveMovie } from '../services/fakeMovieService';
-import { getGenres } from '../services/fakeGenreService';
+import { getMovie, saveMovie } from '../services/movieService';
+import { getGenres } from '../services/genreService';
 
 class MovieForm extends Form {
   state = {
@@ -37,22 +37,27 @@ class MovieForm extends Form {
       .label('Daily Rental Rate')
   };
 
-  componentDidMount() {
-    const genres = getGenres();
+  async componentDidMount() {
+    const { data: genres } = await getGenres();
     this.setState({ genres });
 
     const movieId = this.props.match.params.id;
     if (movieId === 'new') return;
 
-    const movie = getMovie(movieId);
-    // ＊＊必須使用 replace -> 當按下上一頁時，進不了這一頁
-    if (!movie) return this.props.history.replace('/not-found');
-
-    // 因為 server 傳回來的資料格式，不一定就是頁面使用的呈現格式
-    // 所以使用 mapToViewModel 轉換資料格式
-    this.setState({
-      data: this.mapToViewModel(movie)
-    });
+    try {
+      const { data: movie } = await getMovie(movieId);
+      // 因為 server 傳回來的資料格式，不一定就是頁面使用的呈現格式
+      // 所以使用 mapToViewModel 轉換資料格式
+      this.setState({
+        data: this.mapToViewModel(movie)
+      });
+    } catch (ex) {
+      // if (!movie) return this.props.history.replace('/not-found');
+      if (ex.response && ex.response.status === 404) {
+        // ＊＊必須使用 replace -> 當按下上一頁時，進不了這一頁
+        return this.props.history.replace('/not-found');
+      }
+    }
   }
 
   mapToViewModel(movie) {
