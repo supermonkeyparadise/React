@@ -77,9 +77,9 @@ class MovieForm extends Form {
     };
   }
 
-  doSubmit = () => {
+  doSubmit = async () => {
     // 儲存在 local
-    saveMovie(this.state.data);
+    await saveMovie(this.state.data);
 
     this.props.history.push('/movies');
   };
