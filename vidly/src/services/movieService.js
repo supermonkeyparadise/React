@@ -1,6 +1,8 @@
 import httpService from './httpService';
+import { apiUrl } from './../config/config.json';
 
-const apiEedpoint = 'http://localhost:3900/api/movies';
+const apiEedpoint = `${apiUrl}/movies`;
+
 export function getMovies() {
   return httpService.get(apiEedpoint);
 }
