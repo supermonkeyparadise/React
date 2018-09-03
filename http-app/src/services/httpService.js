@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 axios.interceptors.response.use(null, error => {
   console.log('>>> INTERCEPTOR CALLED');
@@ -10,7 +11,8 @@ axios.interceptors.response.use(null, error => {
   if (!expectedError) {
     console.log('>>> Logging the error', error);
 
-    alert('An Unexpected error occurred.');
+    toast.error('An Unexpected error occurred.');
+    // toast('Thin is information!!');
   }
 
   // go expected errors -> 由個別的 httpService 處理
