@@ -37,14 +37,16 @@ class MovieForm extends Form {
       .label('Daily Rental Rate')
   };
 
-  async componentDidMount() {
+  populateGenres = async () => {
     const { data: genres } = await getGenres();
     this.setState({ genres });
+  };
 
-    const movieId = this.props.match.params.id;
-    if (movieId === 'new') return;
-
+  populateMovie = async () => {
     try {
+      const movieId = this.props.match.params.id;
+      if (movieId === 'new') return;
+
       const { data: movie } = await getMovie(movieId);
       // 因為 server 傳回來的資料格式，不一定就是頁面使用的呈現格式
       // 所以使用 mapToViewModel 轉換資料格式
@@ -58,6 +60,11 @@ class MovieForm extends Form {
         return this.props.history.replace('/not-found');
       }
     }
+  };
+
+  async componentDidMount() {
+    await this.populateGenres();
+    await this.populateMovie();
   }
 
   mapToViewModel(movie) {
