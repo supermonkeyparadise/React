@@ -1,24 +1,7 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 
+import httpService from './services/httpService';
 import './App.css';
-
-axios.interceptors.response.use(null, error => {
-  console.log('>>> INTERCEPTOR CALLED');
-  const expectedError =
-    error.response &&
-    error.response.status >= 400 &&
-    error.response.status < 500;
-
-  if (!expectedError) {
-    console.log('>>> Logging the error', error);
-
-    alert('An Unexpected error occurred.');
-  }
-
-  // go expected errors
-  return Promise.reject(error);
-});
 
 const apiEndpoint = 'https://jsonplaceholder.typicode.com/posts';
 
@@ -29,12 +12,12 @@ class App extends Component {
 
   async componentDidMount() {
     // pending -> resolved (success) OR rejected (failure)
-    // const promise = axios.get('https://jsonplaceholder.typicode.com/posts');
+    // const promise = httpService.get('https://jsonplaceholder.typicode.com/posts');
     // console.log('>>> promise:', promise);
     // const response = await promise;
     // console.log('>>> response:', response);
 
-    const { data: posts } = await axios.get(apiEndpoint);
+    const { data: posts } = await httpService.get(apiEndpoint);
 
     console.log('>>> posts:', posts);
 
@@ -43,7 +26,7 @@ class App extends Component {
 
   handleAdd = async () => {
     const obj = { title: 'a', body: 'b' };
-    const { data: post } = await axios.post(apiEndpoint, obj);
+    const { data: post } = await httpService.post(apiEndpoint, obj);
 
     console.log('>>> post:', post);
 
@@ -53,8 +36,8 @@ class App extends Component {
 
   handleUpdate = async post => {
     post.title = 'UPDATED';
-    const { data } = await axios.put(`${apiEndpoint}/${post.id}`, post);
-    // axios.patch(`${apiEndpoint}/${post.id}`, { title: post.id });
+    const { data } = await httpService.put(`${apiEndpoint}/${post.id}`, post);
+    // httpService.patch(`${apiEndpoint}/${post.id}`, { title: post.id });
 
     console.log('>>> put:', data);
 
@@ -72,7 +55,7 @@ class App extends Component {
     this.setState({ posts });
 
     try {
-      await axios.delete(`${apiEndpoint}/${post.id}`, post);
+      await httpService.delete(`${apiEndpoint}/${post.id}`, post);
     } catch (ex) {
       console.log('>>> HANDLE DELETE CATCH BLOCK');
 
