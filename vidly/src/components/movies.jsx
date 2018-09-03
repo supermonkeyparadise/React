@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
+import { toast } from 'react-toastify';
 
-import { getMovies } from './../services/fakeMovieService';
+import { getMovies, deleteMovie } from './../services/movieService';
 import { getGenres } from './../services/genreService';
 import Pagination from './common/pagination';
 import { paginate } from './../utils/paginate';
@@ -25,19 +26,31 @@ class Movies extends Component {
   async componentDidMount() {
     const { data } = await getGenres();
     const genres = [{ _id: '', name: 'All Genres' }, ...data];
-    // Ajax fetch data
-    this.setState({ movies: getMovies(), genres });
+
+    const { data: movies } = await getMovies();
+
+    this.setState({ movies, genres });
   }
 
-  handleDelete = movie => {
+  handleDelete = async movie => {
+    const originalMovies = this.state.movies;
     // deleteMovie(movie._id);
     // this.setState({ movies: getMovies() });
 
-    const movies = this.state.movies.filter(m => m._id !== movie._id);
+    const movies = originalMovies.filter(m => m._id !== movie._id);
 
     // overwrite movies 屬性的值
     // this.setState({ movies: movies });
     this.setState({ movies });
+
+    try {
+      await deleteMovie(movie._id);
+    } catch (ex) {
+      if (ex.response && ex.response.status === 404)
+        toast.error('This movie has already been deleted.');
+
+      this.setState({ movies: originalMovies });
+    }
   };
 
   handleLike = movie => {
