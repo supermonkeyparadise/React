@@ -11,4 +11,5 @@ import 'bootstrap/dist/css/bootstrap.css';
 logger.init();
 
 ReactDOM.render(<App />, document.getElementById('root'));
+
 registerServiceWorker();
