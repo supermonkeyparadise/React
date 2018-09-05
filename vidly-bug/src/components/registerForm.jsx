@@ -1,9 +1,8 @@
-import React, { Component } from 'react';
-
+import React from 'react';
 import Joi from 'joi-browser';
-
 import Form from './common/form';
-import * as userService from './../services/userService';
+import * as userService from '../services/userService';
+// import auth from '../services/authService';
 
 class RegisterForm extends Form {
   state = {
@@ -26,15 +25,22 @@ class RegisterForm extends Form {
   };
 
   doSubmit = async () => {
-    // Call the server
-    console.log('>>> RegisterForm Submitted!!');
-
-    await userService.register(this.state.data);
+    try {
+      const response = await userService.register(this.state.data);
+      // auth.loginWithJwt(response.headers['x-auth-token']);
+      //window.location = '/';
+    } catch (ex) {
+      if (ex.response && ex.response.status === 400) {
+        const errors = { ...this.state.errors };
+        errors.email = ex.response.data;
+        this.setState({ errors });
+      }
+    }
   };
 
   render() {
     return (
-      <React.Fragment>
+      <div>
         <h1>Register</h1>
         <form onSubmit={this.handleSubmit}>
           {this.renderInput('email', 'Email')}
@@ -42,7 +48,7 @@ class RegisterForm extends Form {
           {this.renderInput('name', 'Name')}
           {this.renderButton('Register')}
         </form>
-      </React.Fragment>
+      </div>
     );
   }
 }
