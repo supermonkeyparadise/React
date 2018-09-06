@@ -26,7 +26,7 @@ class LoginForm extends Form {
       await auth.login(data.username, data.password);
 
       const { state } = this.props.location;
-      // keypoint
+      // refresh page!!(重新載入頁面)
       window.location = state ? state.from.pathname : '/';
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {

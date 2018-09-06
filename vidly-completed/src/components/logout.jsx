@@ -1,11 +1,13 @@
-import { Component } from "react";
-import auth from "../services/authService";
+import { Component } from 'react';
+
+import auth from '../services/authService';
 
 class Logout extends Component {
   componentDidMount() {
     auth.logout();
 
-    window.location = "/";
+    // refresh page!!(重新載入頁面)
+    window.location = '/';
   }
 
   render() {
