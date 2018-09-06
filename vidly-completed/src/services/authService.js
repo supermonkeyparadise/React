@@ -1,4 +1,5 @@
 import jwtDecode from 'jwt-decode';
+
 import http from './httpService';
 
 import { apiUrl } from '../config.json';
@@ -9,11 +10,13 @@ const tokenKey = 'token';
 http.setJwt(getJwt());
 
 export async function login(email, password) {
+  // jwt 存在 body 中
   const { data: jwt } = await http.post(apiEndpoint, { email, password });
   localStorage.setItem(tokenKey, jwt);
 }
 
 export function loginWithJwt(jwt) {
+  // jwt 存在 response header 中
   localStorage.setItem(tokenKey, jwt);
 }
 
