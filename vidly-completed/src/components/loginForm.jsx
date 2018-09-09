@@ -38,6 +38,7 @@ class LoginForm extends Form {
   };
 
   render() {
+    // 防止登入後，又可以利用網址列看到 login form
     if (auth.getCurrentUser()) return <Redirect to="/" />;
 
     return (
