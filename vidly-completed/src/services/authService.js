@@ -7,6 +7,7 @@ import { apiUrl } from '../config.json';
 const apiEndpoint = apiUrl + '/auth';
 const tokenKey = 'token';
 
+// 當取得 jwt 後，才指派給 axios
 http.setJwt(getJwt());
 
 export async function login(email, password) {

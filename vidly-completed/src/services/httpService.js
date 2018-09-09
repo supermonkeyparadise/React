@@ -1,6 +1,6 @@
-import axios from "axios";
-import logger from "./logService";
-import { toast } from "react-toastify";
+import axios from 'axios';
+import logger from './logService';
+import { toast } from 'react-toastify';
 
 axios.interceptors.response.use(null, error => {
   const expectedError =
@@ -10,14 +10,15 @@ axios.interceptors.response.use(null, error => {
 
   if (!expectedError) {
     logger.log(error);
-    toast.error("An unexpected error occurrred.");
+    toast.error('An unexpected error occurrred.');
   }
 
   return Promise.reject(error);
 });
 
+// 每次發送 request 都會附加 x-auth-token
 function setJwt(jwt) {
-  axios.defaults.headers.common["x-auth-token"] = jwt;
+  axios.defaults.headers.common['x-auth-token'] = jwt;
 }
 
 export default {
